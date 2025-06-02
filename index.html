@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Movie Recommender</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-6">
+  <div class="max-w-4xl mx-auto bg-white p-6 rounded shadow">
+    <h1 class="text-3xl font-bold mb-6 text-center">🎬 Movie Recommendation System</h1>
+
+    <!-- Form to get recommendations -->
+    <form method="POST" class="mb-8">
+      <div class="flex flex-col md:flex-row md:items-center md:gap-4">
+        <!-- Movie Dropdown -->
+        <div class="flex-1 mb-4 md:mb-0">
+          <label for="movie" class="block text-sm font-medium mb-1">Select a Movie:</label>
+          <select name="movie" id="movie" class="w-full p-2 border border-gray-300 rounded" required>
+            {% for movie in movies|sort %}
+              <option value="{{ movie }}" {% if movie == selected_movie %}selected{% endif %}>{{ movie }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Feature Dropdown -->
+        <div class="flex-1">
+          <label for="feature" class="block text-sm font-medium mb-1">Select Feature:</label>
+          <select name="feature" id="feature" class="w-full p-2 border border-gray-300 rounded" required>
+            {% for key in feature_options.keys() %}
+              <option value="{{ key }}" {% if key == selected_feature %}selected{% endif %}>{{ key | capitalize }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="mt-4 md:mt-6 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+          Get Recommendations
+        </button>
+      </div>
+    </form>
+
+    <!-- Recommendations Display -->
+    {% if recommendations %}
+      <h2 class="text-2xl font-semibold mb-4">Recommended Movies:</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {% for rec in recommendations %}
+          <div class="p-4 border rounded shadow bg-white">
+            <h3 class="text-lg font-bold">{{ rec.title }}</h3>
+            <p class="text-gray-600">Similarity Score: {{ rec.similarity }}</p>
+          </div>
+        {% endfor %}
+      </div>
+    {% elif selected_movie %}
+      <p class="text-red-500">No similar movies found above the threshold.</p>
+    {% endif %}
+  </div>
+</body>
+</html>
