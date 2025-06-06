@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Rate Movies</title>
+  <link rel="icon" href="static/favicon.png" type="image/png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    .ui-autocomplete {
+      max-height: 350px;
+      overflow-y: auto;
+      background-color: #fffbe7;
+      border: 1px solid #e9c46a;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+
+<body class="bg-[#264653] min-h-screen p-6">
+  <div class="max-w-4xl mx-auto bg-[#E9C46A] p-6 rounded shadow">
+    <h1 class="text-3xl font-bold mb-6 text-center text-[#E76F51]">⭐ Rate Movies</h1>
+    <form method="POST" class="mb-8">
+      <div class="flex flex-col md:flex-row md:items-center md:gap-4">
+        
+        <!-- Movie Search Input -->
+        <div class="flex-1 mb-4 md:mb-0">
+          <label for="movie_search" class="block text-sm font-medium mb-1">Search Movie:</label>
+          <input type="text" name="movie" id="movie_search" class="w-full p-2 border border-gray-300 rounded"
+            placeholder="Start typing a movie name..." required>
+        </div>
+        <!-- User email input-->
+        <div class="flex-1 mb-4 md:mb-0">
+          <label for="email" class="block text-sm font-medium mb-1">User Email:</label>
+          <input type="email" name="email" id="email" class="w-full p-2 border border-gray-300 rounded" required>
+        </div>
+      </div>
+      <!-- Rating Input -->
+      <div class="flex-1">
+        <label for="rating" class="block text-sm font-medium mb-1">Rating (0-10):</label>
+        <input type="number" name="rating" id="rating" step="0.1" class="w-full p-2 border border-gray-300 rounded"
+          min="0" max="10" required>
+      </div>
+      <!-- Submit Button -->
+      <!-- Submit Button -->
+<button type="submit" class="mt-4 md:mt-6 bg-[#E76F51] text-white px-4 py-2 rounded hover:bg-blue-700">
+  Submit Rating
+</button>
+{% if message %}
+  <div class="mb-4 text-center text-lg font-semibold {{ 'text-green-600' if '✅' in message else 'text-red-600' }}">
+    {{ message }}
+  </div>
+{% endif %}
+</form> <!-- Close the form here properly -->
+
+<a href="{{ url_for('index') }}" class="block mt-6 text-center text-[#264653] hover:underline">← Back to Home</a>
+</div> <!-- Now close the container div -->
+
+  </div>
+</body>
+<script>
+  $(function () {
+    const movies = {{ movies| tojson | safe
+  }};
+  $("#movie_search").autocomplete({
+    source: movies,
+    minLength: 0,
+    select: function (event, ui) {
+      this.value = ui.item.value;
+    }
+  }).focus(function () {
+    if (this.value === "") {
+      $(this).autocomplete("search");
+    }
+  });
+  });
+</script>
+
+</html>
